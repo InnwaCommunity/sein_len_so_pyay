@@ -1,114 +1,145 @@
 package com.example.crane.module.dashboard
 
-import com.example.crane.R
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.crane.module.home.HomeScreen
+import com.example.crane.R
+import com.example.crane.config.RoutesName
+import com.example.crane.module.plants.PlantScreen
+import com.example.crane.module.profile.ProfileScreen
+import com.example.crane.module.search.SearchScreen
+import com.example.crane.ui.theme.CraneTheme
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
 @Composable
-fun DashboardScreen(navController: NavController){
-    var showDialog by remember { mutableStateOf(false) }
-    var textFieldValue by remember { mutableStateOf(TextFieldValue()) }
-    var otpValue by remember {
-        mutableStateOf("")
+fun DiscoverPagePreview() {
+    val navController = rememberNavController()
+    CraneTheme {
+        DashboardScreen()
     }
-
-    if (showDialog){
-        CustomDialog(onDismiss = { showDialog = false })
+}
+@Composable
+fun DashboardScreen() {
+    var navigationSelectedItem by remember {
+        mutableIntStateOf(0)
     }
-
+    val navController = rememberNavController()
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Jetpack Compose UI Sample") })
-        },
-        content = { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                val image: Painter = painterResource(id = R.drawable.icons) // replace with your image resource
-                Image(painter = image, contentDescription = null, modifier = Modifier.size(128.dp))
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                OutlinedTextField(
-                    value = textFieldValue,
-                    onValueChange = { textFieldValue = it },
-                    label = { Text("Input Text") }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(onClick = { showDialog = true }) {
-                    Text("Show Dialog")
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            NavigationBar {
+                BottomNavigationItem().bottomNavigationItems().forEachIndexed {index,navigationItem ->
+                    NavigationBarItem(
+                        selected = index == navigationSelectedItem,
+                        icon = {
+                            Column {
+                                Icon(
+                                    painter = painterResource(id = navigationItem.icon),
+                                    modifier = Modifier.size(32.dp),
+                                    tint = if (index == navigationSelectedItem) Color.Green else Color.Black,
+//                                navigationItem.icon,
+                                    contentDescription = navigationItem.label
+                                )
+                                if (index == navigationSelectedItem) Spacer(modifier = Modifier.height(30.dp)) else Spacer(modifier = Modifier.height(0.dp))
+                            }
+                        },
+                        onClick = {
+                            navigationSelectedItem = index
+                            navController.navigate(navigationItem.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    )
                 }
-                OtpTextField(
-                    otpText = otpValue,
-                    onOtpTextChange = { value, otpInputFilled ->
-                        otpValue = value
-                    }
-                )
             }
         }
-    )
-}
-
-
-@Composable
-fun CustomDialog(onDismiss: () -> Unit){
-    Dialog(onDismissRequest = onDismiss) {
-        Surface (
-            shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colorScheme.background,
-            contentColor = MaterialTheme.colorScheme.onBackground
-        ){
-            Column (
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Text(text = "This is a dialog")
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = onDismiss) {
-                    Text(text = "Dismiss")
-                }
+    ) {paddingValues ->
+        NavHost(
+            navController = navController,
+            startDestination = RoutesName.home,
+            modifier = Modifier.padding(paddingValues = paddingValues)) {
+            composable(RoutesName.home) {
+                HomeScreen(
+                    navController
+                )
+            }
+            composable(RoutesName.search) {
+                SearchScreen(
+                    navController
+                )
+            }
+            composable(RoutesName.plants) {
+                PlantScreen(
+                    navController
+                )
+            }
+            composable(RoutesName.profile) {
+                ProfileScreen(
+                    navController
+                )
             }
         }
     }
 }
+//initializing the data class with default parameters
+data class BottomNavigationItem(
+    val label : String = "",
+    val icon: Int = R.drawable.home_icon,
+    val route : String = ""
+) {
+
+    //function to get the list of bottomNavigationItems
+    fun bottomNavigationItems() : List<BottomNavigationItem> {
+        return listOf(
+            BottomNavigationItem(
+                label = "Home",
+                icon = R.drawable.home_icon,
+                route = RoutesName.home
+            ),
+            BottomNavigationItem(
+                label = "Search",
+                icon = R.drawable.search_icon,
+                route = RoutesName.search
+            ),
+            BottomNavigationItem(
+                label = "Plants",
+                icon = R.drawable.plant_icon,
+                route = RoutesName.plants
+            ),
+            BottomNavigationItem(
+                label = "Profile",
+                icon = R.drawable.person_icon,
+                route = RoutesName.profile
+            ),
+        )
+    }
+}
+
+

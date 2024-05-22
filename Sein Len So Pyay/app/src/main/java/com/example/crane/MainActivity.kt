@@ -10,27 +10,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.crane.config.RoutesName
+import com.example.crane.module.loginpage.LoginScreen
 import com.example.crane.models.OnboardPage
 import com.example.crane.module.dashboard.DashboardScreen
 import com.example.crane.module.onboarding.OnboardScreen
 import com.example.crane.module.splashscreen.SplashScreen
+import com.example.crane.module.signup.SignUpScreen
 import com.example.crane.ui.theme.CraneTheme
 
 val onboardPageList= listOf(
     OnboardPage(
-        imageRes = R.drawable.second_gear,
-        title = "Second Gear",
-        description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        imageRes = R.drawable.onboarding1,
+        title = "Join the Green Movement",
+        description = "Plant trees, share your journey, inspire change. Join thousands in creating a greener world."
     ),
     OnboardPage(
-        imageRes = R.drawable.third_gear,
-        title = "Third Gear",
-        description = "Praesent at semper est, nec consectetur justo."
+        imageRes = R.drawable.onboarding2,
+        title = "Capture Your Tree-Planting Journey",
+        description = "Document your tree planting. Snap, select, share and make every tree count."
     ),
     OnboardPage(
-        imageRes = R.drawable.gear_four,
-        title = "Gear four",
-        description = "In auctor ultrices turpis at blandit."
+        imageRes = R.drawable.onboarding3,
+        title = "Earn Badges and Recognition",
+        description = "Earn badges as you plant grow. Showcase your contribution to the environment."
     )
 )
 object Tags {
@@ -54,10 +57,12 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "splash") {
-        composable("splash") { SplashScreen(navController) }
-        composable("onboard") { OnboardScreen(navController) }
-        composable("dashboard") { DashboardScreen(navController) }
+    NavHost(navController = navController, startDestination = RoutesName.splash) {
+        composable(RoutesName.splash) { SplashScreen(navController) }
+        composable(RoutesName.onboard) { OnboardScreen(navController) }
+        composable(RoutesName.login){ LoginScreen(navController) }
+        composable(RoutesName.signup){ SignUpScreen(navController) }
+        composable(RoutesName.dashboard) { DashboardScreen() }
     }
 }
 

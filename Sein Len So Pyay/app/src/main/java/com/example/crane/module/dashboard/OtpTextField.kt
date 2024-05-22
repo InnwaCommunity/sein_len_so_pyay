@@ -4,6 +4,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,39 +23,44 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.crane.ui.theme.GreyDark
 import com.example.crane.ui.theme.GreyLight
-
 @Composable
 fun OtpTextField(
     modifier: Modifier = Modifier,
     otpText: String,
     otpCount: Int = 6,
-    onOtpTextChange: (String,Boolean) -> Unit
-){
-    LaunchedEffect(Unit){
-        if (otpText.length > otpCount){
+    onOtpTextChange: (String, Boolean) -> Unit
+) {
+    LaunchedEffect(Unit) {
+        if (otpText.length > otpCount) {
             throw IllegalArgumentException("Otp text value must not have more than otpCount: $otpCount characters")
         }
     }
 
     BasicTextField(
-        modifier=modifier,
+        modifier = modifier,
         value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
         onValueChange = {
-            if (it.text.length <= otpCount){
-                onOtpTextChange.invoke(it.text,it.text.length==otpCount)
+            if (it.text.length <= otpCount) {
+                onOtpTextChange.invoke(it.text, it.text.length == otpCount)
             }
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-        decorationBox = {
-            Row (horizontalArrangement = Arrangement.Center){
-                repeat(otpCount){index ->
+        decorationBox = { innerTextField ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                repeat(otpCount) { index ->
                     CharView(
-                        index=index,
-                        text=otpText
+                        index = index,
+                        text = otpText
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    if (index != otpCount - 1) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
                 }
             }
+            innerTextField()  // Add this to ensure the text field is part of the layout
         }
     )
 }
@@ -62,16 +69,17 @@ fun OtpTextField(
 private fun CharView(
     index: Int,
     text: String
-){
+) {
     val isFocused = text.length == index
-    val char = when{
+    val char = when {
         index == text.length -> "0"
         index > text.length -> ""
         else -> text[index].toString()
     }
     Text(
-        modifier =Modifier
+        modifier = Modifier
             .width(40.dp)
+            .height(56.dp)  // Adjust height to make it larger
             .border(
                 1.dp, when {
                     isFocused -> GreyDark
@@ -80,12 +88,11 @@ private fun CharView(
                 RoundedCornerShape(8.dp)
             )
             .padding(2.dp),
-
         text = char,
-        style =MaterialTheme.typography.headlineMedium,
-        color = if(isFocused){
+        style = MaterialTheme.typography.headlineMedium,
+        color = if (isFocused) {
             GreyLight
-        }else {
+        } else {
             GreyDark
         },
         textAlign = TextAlign.Center

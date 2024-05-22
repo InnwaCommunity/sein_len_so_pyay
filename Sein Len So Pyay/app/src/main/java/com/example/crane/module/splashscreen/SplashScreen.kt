@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.crane.config.RoutesName
 import com.example.crane.config.SharedPref
 import kotlinx.coroutines.delay
 
@@ -21,24 +22,32 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(navController: NavController) {
     val context = LocalContext.current
+//    Toast.makeText(context, "${SharedPref.getString(
+//        context = context,
+//        key = SharedPref.userData
+//    )}", Toast.LENGTH_LONG).show()
 
     LaunchedEffect(key1 = true) {
-        delay(3000)
-        if (SharedPref.getBoolean(
+        delay(500)
+        if ( SharedPref.getBoolean(
                 context = context,
                 key = SharedPref.FIRSTTIME
-            ) == null) {
-            SharedPref.setBoolean(
-                context = context,
-                value = false,
-                key = SharedPref.FIRSTTIME
-            )
-            navController.navigate("onboard") {
-                popUpTo("splash") { inclusive = true }
+            ) == false) {
+            navController.navigate(RoutesName.onboard) {
+                popUpTo(RoutesName.splash) { inclusive = true }
             }
         } else {
-            navController.navigate("dashboard") {
-                popUpTo("splash") { inclusive = true }
+            if (SharedPref.getString(
+                    context = context,
+                    key = SharedPref.userData
+                ) == null){
+                navController.navigate(RoutesName.dashboard) {//need to change login
+                    popUpTo(RoutesName.splash) { inclusive = true }
+                }
+            }else{
+                navController.navigate(RoutesName.dashboard) {
+                    popUpTo(RoutesName.splash) { inclusive = true }
+                }
             }
         }
     }
