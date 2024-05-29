@@ -14,13 +14,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.crane.config.RoutesName
 import com.example.crane.config.SharedPref
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(navController: NavHostController) {
     val context = LocalContext.current
 //    Toast.makeText(context, "${SharedPref.getString(
 //        context = context,

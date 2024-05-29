@@ -1,5 +1,6 @@
 package com.example.crane.module.dashboard
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -20,33 +22,41 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.example.crane.module.home.HomeScreen
 import com.example.crane.R
+import com.example.crane.config.DetailsScreen
 import com.example.crane.config.RoutesName
+import com.example.crane.module.championspage.ChampionsPage
+import com.example.crane.module.championsprofile.ChampionsProfilePage
+import com.example.crane.module.createpage.CreateNew
 import com.example.crane.module.plants.PlantScreen
 import com.example.crane.module.profile.ProfileScreen
 import com.example.crane.module.search.SearchScreen
 import com.example.crane.ui.theme.CraneTheme
 
-
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
+//@Composable
+//fun DiscoverPagePreview() {
+//    val navController = rememberNavController()
+//    CraneTheme {
+//        DashboardScreen()
+//    }
+//}
 @Composable
-fun DiscoverPagePreview() {
-    val navController = rememberNavController()
-    CraneTheme {
-        DashboardScreen()
-    }
-}
-@Composable
-fun DashboardScreen() {
+fun DashboardScreen(navController: NavController) {
     var navigationSelectedItem by remember {
         mutableIntStateOf(0)
     }
-    val navController = rememberNavController()
+    val navdashController = rememberNavController()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -67,22 +77,33 @@ fun DashboardScreen() {
                             }
                         },
                         onClick = {
-                            navigationSelectedItem = index
-                            navController.navigate(navigationItem.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                            if (index == 2){
+                                navController.navigate(RoutesName.createnew){
+                                    popUpTo(navdashController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                            }else{
+                                navigationSelectedItem = index
+                                navdashController.navigate(navigationItem.route) {
+                                    popUpTo(navdashController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                     )
                 }
             }
         }
-    ) {paddingValues ->
+    )
+    {paddingValues ->
         NavHost(
-            navController = navController,
+            navController = navdashController,
             startDestination = RoutesName.home,
             modifier = Modifier.padding(paddingValues = paddingValues)) {
             composable(RoutesName.home) {
@@ -92,6 +113,11 @@ fun DashboardScreen() {
             }
             composable(RoutesName.search) {
                 SearchScreen(
+                    navController
+                )
+            }
+            composable(RoutesName.createnew) {
+                CreateNew(
                     navController
                 )
             }
@@ -105,9 +131,33 @@ fun DashboardScreen() {
                     navController
                 )
             }
+//            detailsNavGraph(navController = navController)
+//            composable(RoutesName.championsPage){ ChampionsPage(navController) }
+//            composable(RoutesName.championsProfilePage){ ChampionsProfilePage(navController) }
         }
     }
 }
+
+//fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
+//    navigation(
+//        route = RoutesName.championsPage,
+//        startDestination = DetailsScreen.ChampionsPage.route
+//    ) {
+//        composable(route = DetailsScreen.ChampionsPage.route) {
+//            ScreenContent(name = DetailsScreen.Information.route) {
+//                navController.navigate(DetailsScreen.Overview.route)
+//            }
+//        }
+//        composable(route = DetailsScreen.Overview.route) {
+//            ScreenContent(name = DetailsScreen.Overview.route) {
+//                navController.popBackStack(
+//                    route = DetailsScreen.Information.route,
+//                    inclusive = false
+//                )
+//            }
+//        }
+//    }
+//}
 //initializing the data class with default parameters
 data class BottomNavigationItem(
     val label : String = "",
@@ -127,6 +177,11 @@ data class BottomNavigationItem(
                 label = "Search",
                 icon = R.drawable.search_icon,
                 route = RoutesName.search
+            ),
+            BottomNavigationItem(
+                label = "Create",
+                icon = R.drawable.create_icon,
+                route = RoutesName.createnew
             ),
             BottomNavigationItem(
                 label = "Plants",

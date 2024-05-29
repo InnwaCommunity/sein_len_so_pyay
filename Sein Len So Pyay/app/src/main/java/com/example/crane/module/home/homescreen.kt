@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
@@ -43,15 +44,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.crane.module.dashboard.DashboardScreen
+import com.example.crane.config.RoutesName
 import com.example.crane.ui.theme.CraneTheme
 
 
 
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    val navController = rememberNavController()
+    CraneTheme {
+        HomeScreen(navController)
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
+//    val navhomeController = rememberNavController()
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -64,17 +77,26 @@ fun HomeScreen(navController: NavController) {
                         contentDescription = "Logo")
                 },
                         actions = {
-                            Row {
-                                Icon(
-                                    modifier = Modifier
-                                        .width(28.dp)
-                                        .background(Color(0xFFF4F7F2))
-                                        .height(28.dp),
-                                    painter = painterResource(id = R.drawable.prize),
-                                    contentDescription = "Prize")
+                            Row (
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ){
+                                IconButton(onClick = {
+//                                    navController.safeNavigate(RoutesName.championsPage)
+                                    navController.navigate(RoutesName.championsPage)
+                                }) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .width(28.dp)
+                                            .background(Color(0xFFF4F7F2))
+                                            .height(28.dp),
+                                        painter = painterResource(id = R.drawable.prize),
+                                        contentDescription = "Prize")
+                                }
                                 Spacer(modifier = Modifier.width(7.dp))
                                 Row (
-                                    modifier = Modifier.padding(1.dp)
+                                    modifier = Modifier
+                                        .padding(1.dp)
                                         .background(Color(0xFFF4F7F2))
                                 ){
                                     Icon(
@@ -90,12 +112,16 @@ fun HomeScreen(navController: NavController) {
                                     )
                                 }
                                 Spacer(modifier = Modifier.width(7.dp))
-                                Icon(
-                                    modifier = Modifier
-                                        .width(18.dp)
-                                        .height(18.dp),
-                                    painter = painterResource(id = R.drawable.notification),
-                                    contentDescription = "notification")
+                                IconButton(onClick = {
+                                    navController.navigate(RoutesName.notificationListPage)
+                                }) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .width(18.dp)
+                                            .height(18.dp),
+                                        painter = painterResource(id = R.drawable.notification),
+                                        contentDescription = "notification")
+                                }
                             }
                         }
                 )
@@ -136,25 +162,8 @@ fun HomeScreen(navController: NavController) {
                 }
                 when (tabIndex) {
                     0 -> DiscoverPage(navController)
-                    1 -> FollowingPage(navController)
+                    1 -> DiscoverPage(navController)
                 }
-//                TabRow(
-//                    modifier = Modifier
-//                        .padding(0.dp),
-//                    selectedTabIndex = tabIndex) {
-//                    tabs.forEachIndexed { index, title ->
-//                        Tab(
-//                            text = { Text(title) },
-//                            selected = tabIndex == index,
-//                            onClick = { tabIndex = index }
-//                        )
-//                    }
-//                }
-//                when (tabIndex) {
-//                    0 -> DiscoverPage(navController)
-//                    1 -> FollowingPage(navController)
-//
-//                }
             }
         }
 }

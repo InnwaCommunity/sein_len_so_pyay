@@ -1,8 +1,7 @@
-package com.example.crane.module.profile
+package com.example.crane.module.championsprofile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,14 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -49,29 +47,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.crane.Greeting
+import com.example.crane.ui.theme.CraneTheme
 import com.example.crane.R
-import com.example.crane.config.RoutesName
-import com.example.crane.module.championsprofile.AboutPage
-import com.example.crane.module.championsprofile.BadgesPage
-import com.example.crane.module.championsprofile.PostsPage
 import com.example.crane.module.home.HomeCategoryTabIndicator
 import com.example.crane.module.home.MyTab
-import com.example.crane.ui.theme.CraneTheme
 
 
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenPreview() {
-    val navController = rememberNavController()
-    CraneTheme {
-        ProfileScreen(navController)
-    }
-}
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun ProfileScreen(navController: NavController){
-    val scrollState = rememberScrollState()
+fun ChampionsProfilePage(navController: NavController){
 
     var tabIndex by remember { mutableIntStateOf(0) }
 
@@ -95,16 +79,13 @@ fun ProfileScreen(navController: NavController){
                 },
                 actions = {
                     IconButton(
-                        modifier = Modifier.size(32.dp)
-                            .padding(end = 10.dp),
-                        onClick = {
-                            navController.navigate(RoutesName.createnew)
-                        }) {
-                        Icon( Icons.Default.Add,  null)
+                        modifier = Modifier.size(32.dp),
+                        onClick = { /*TODO*/ }) {
+                        Icon( Icons.Default.MoreHoriz,  null)
                     }
                 })
         }
-    ){ paddingValues ->
+    ){ paddingValues ->  
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -132,7 +113,7 @@ fun ProfileScreen(navController: NavController){
                         Icon(painter = painterResource(id = R.drawable.img_4),
                             contentDescription = null,
                             modifier = Modifier.size(16.dp))
-                        Text(text = "Ranking-6",
+                        Text(text = "Ranking-4",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.W500)
                     }
@@ -152,7 +133,7 @@ fun ProfileScreen(navController: NavController){
                         Icon(painter = painterResource(id = R.drawable.star),
                             contentDescription = null,
                             modifier = Modifier.size(16.dp))
-                        Text(text = "2125",
+                        Text(text = "2480",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.W500)
                     }
@@ -165,11 +146,10 @@ fun ProfileScreen(navController: NavController){
                     .size(90.dp)
                     .clip(CircleShape)
             )
-            Text(text = "Michael Wong",
+            Text(text = "Maria",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.W700,
                 color = Color(0xFF181D27))
-            Spacer(modifier = Modifier.height(10.dp))
             Row (
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -203,9 +183,43 @@ fun ProfileScreen(navController: NavController){
                         color = Color(0xFF565954))
                 }
             }
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Button(onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF3A7D44) // Green color
+                    ),
+                    shape = RoundedCornerShape(50), // Rounded corner with a high radius
+                    modifier = Modifier
+                        .height(35.dp)
+                        .width(162.dp)
+                        .padding(horizontal = 5.dp)) {
+                    Text(text = "Follow",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.W500,
+                        color = Color(0xFFFAFCF7))
+                }
+                Button(onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF70736D) // Green color
+                    ),
+                    shape = RoundedCornerShape(50), // Rounded corner with a high radius
+                    modifier = Modifier
+                        .height(35.dp)
+                        .width(162.dp)
+                        .padding(horizontal = 5.dp)) {
+                    Text(text = "Appreciate",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.W500,
+                        color = Color(0xFFFAFCF7))
+                }
+            }
 
-            Column() {
+            Column(modifier = Modifier.padding(paddingValues)) {
                 ScrollableTabRow(
                     edgePadding = 0.dp,
                     selectedTabIndex = tabIndex,

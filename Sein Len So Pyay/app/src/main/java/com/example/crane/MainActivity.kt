@@ -3,6 +3,9 @@ package com.example.crane
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,8 +16,16 @@ import androidx.navigation.compose.rememberNavController
 import com.example.crane.config.RoutesName
 import com.example.crane.module.loginpage.LoginScreen
 import com.example.crane.models.OnboardPage
+import com.example.crane.module.championspage.ChampionsPage
+import com.example.crane.module.championsprofile.ChampionsProfilePage
+import com.example.crane.module.createpage.CreateNew
 import com.example.crane.module.dashboard.DashboardScreen
+import com.example.crane.module.home.HomeScreen
+import com.example.crane.module.notification.NotiListScreen
 import com.example.crane.module.onboarding.OnboardScreen
+import com.example.crane.module.plants.PlantScreen
+import com.example.crane.module.profile.ProfileScreen
+import com.example.crane.module.search.SearchScreen
 import com.example.crane.module.splashscreen.SplashScreen
 import com.example.crane.module.signup.SignUpScreen
 import com.example.crane.ui.theme.CraneTheme
@@ -62,7 +73,11 @@ fun MainScreen() {
         composable(RoutesName.onboard) { OnboardScreen(navController) }
         composable(RoutesName.login){ LoginScreen(navController) }
         composable(RoutesName.signup){ SignUpScreen(navController) }
-        composable(RoutesName.dashboard) { DashboardScreen() }
+        composable(RoutesName.dashboard) { DashboardScreen(navController) }
+        composable(RoutesName.championsPage){ ChampionsPage(navController)}
+        composable(RoutesName.championsProfilePage){ ChampionsProfilePage(navController)}
+        composable(RoutesName.notificationListPage){ NotiListScreen(navController) }
+        composable(RoutesName.createnew){ CreateNew(navController)}
     }
 }
 
